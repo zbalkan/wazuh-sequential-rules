@@ -1,0 +1,1 @@
+# Wazuh sequential rule demo
