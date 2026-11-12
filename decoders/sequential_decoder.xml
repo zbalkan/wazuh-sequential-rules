@@ -1,0 +1,13 @@
+<!--
+  Demo decoder for the sequential correlation tests.
+  Input: <syslog header> seqdemo: action=<word> srcip=<address>
+-->
+<decoder name="seqdemo">
+    <program_name>^seqdemo$</program_name>
+</decoder>
+
+<decoder name="seqdemo-fields">
+    <parent>seqdemo</parent>
+    <regex>^action=(\S+) srcip=(\S+)$</regex>
+    <order>action, srcip</order>
+</decoder>

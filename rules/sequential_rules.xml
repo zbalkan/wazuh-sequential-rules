@@ -1,0 +1,40 @@
+<!--
+  Demo ruleset for "Understanding Wazuh rules, part III: sequential correlation".
+  Rule A (100570) and rule B (100505) are minimal stand-ins; rule C (100575) is
+  the article's rule unchanged.
+-->
+<group name="seqdemo,">
+
+    <rule id="100500" level="0">
+        <decoded_as>seqdemo</decoded_as>
+        <description>seqdemo events grouped.</description>
+    </rule>
+
+    <!-- Rule A: must have a positive level to serve as a historical source -->
+    <rule id="100570" level="3">
+        <if_sid>100500</if_sid>
+        <action>suspicious</action>
+        <description>Suspicious authentication attempt from $(srcip).</description>
+    </rule>
+
+    <!-- Rule B: the current-event parent of rule C -->
+    <rule id="100505" level="3">
+        <if_sid>100500</if_sid>
+        <action>success</action>
+        <description>Successful authentication from $(srcip).</description>
+    </rule>
+
+    <!-- Rule C: earlier rule A, then current rule B -->
+    <rule id="100575" level="12" timeframe="60">
+        <if_matched_sid>100570</if_matched_sid>
+        <if_sid>100505</if_sid>
+        <same_srcip />
+        <description>Correlated events from $(srcip). </description>
+        <description>Potential password spraying.</description>
+        <mitre>
+            <id>T1110</id>
+        </mitre>
+        <group>password_spray,</group>
+    </rule>
+
+</group>
